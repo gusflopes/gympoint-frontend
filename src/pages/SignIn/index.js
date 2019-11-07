@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Form, Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
-import { Wrapper, Content } from './styles';
 
 import logo from '~/assets/logo.png';
 
@@ -14,26 +13,22 @@ const schema = Yup.object().shape({
 });
 
 export default function SignIn() {
-  function handleSubmit(email, password) {
+  function handleSubmit({ email, password }) {
     console.log(`Email: ${email} e Password: ${password}`);
   }
 
   return (
-    <Wrapper>
-      <Content>
-        <img src={logo} alt="GymPoint" />
+    <>
+      <img src={logo} alt="GymPoint" />
 
-        <Form schema={schema} onSubmit={handleSubmit}>
-          <Input name="email" placeholder="Seu e-mail" />
-          <Input
-            name="password"
-            type="password"
-            placeholder="Sua senha secreta"
-          />
+      <Form schema={schema} onSubmit={handleSubmit}>
+        <strong>SEU E-MAIL</strong>
+        <Input name="email" placeholder="exemplo@email.com" />
+        <strong>SUA SENHA</strong>
+        <Input name="password" type="password" placeholder="*********" />
 
-          <button type="submit">Acessar</button>
-        </Form>
-      </Content>
-    </Wrapper>
+        <button type="submit">Entrar no Sistema</button>
+      </Form>
+    </>
   );
 }
