@@ -6,7 +6,7 @@ import { Container, Menu, Content, SearchBar } from './styles';
 
 export default function Students() {
   const [students, setStudents] = useState([]);
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     async function getStudents() {
@@ -18,16 +18,33 @@ export default function Students() {
     getStudents();
   }, []);
 
-  function handleEdit(e) {
-    console.log(`Edit clicado: ${e}`);
+  function handleEdit(id) {
+    console.log(`Edit clicado - Student.id: ${id}`);
   }
 
-  function handleDelete(e) {
-    console.log(`Delete clicado: ${e}`);
+  function handleDelete(id) {
+    setStudents(students.filter(student => student.id !== id));
+
+    // Falta deletar!
+
+    console.log(`Delete clicado: ${id}`);
   }
 
-  function handleSearchInput() {
-    console.log(students);
+  function handleSearch(input) {
+    setSearch(input);
+    console.log(input);
+  }
+
+  async function handleKeyPress(key) {
+    if (key === 'Enter') {
+      const { data } = await api.get('students', {
+        params: {
+          name: search,
+        },
+      });
+      setStudents(data);
+    }
+    // Handled by other function;
   }
 
   return (
@@ -35,13 +52,19 @@ export default function Students() {
       <Menu>
         <strong>Gerenciando alunos</strong>
         <SearchBar>
-          <button type="button">
+          <button type="button" onClick={() => console.log('Cadastrar')}>
             <MdAdd size={24} />
             CADASTRAR
           </button>
           <div>
             <MdSearch size={24} />
-            <input type="text" placeholder="Buscar aluno" />
+            <input
+              type="text"
+              value={search}
+              onChange={e => handleSearch(e.target.value)}
+              onKeyPress={e => handleKeyPress(e.key)}
+              placeholder="Buscar aluno"
+            />
           </div>
         </SearchBar>
       </Menu>
@@ -60,20 +83,20 @@ export default function Students() {
             {students.map(student => (
               <tr key={student.id}>
                 <td>{student.name}</td>
-                <td>gusflopes86@gmail.com</td>
-                <td>33</td>
+                <td>{student.email}</td>
+                <td>{student.age}</td>
                 <td>
                   <button
                     className="edit"
                     type="button"
-                    onClick={e => handleEdit(e)}
+                    onClick={() => handleEdit(student.id)}
                   >
                     editar
                   </button>
                   <button
                     className="delete"
                     type="button"
-                    onClick={e => handleDelete(e)}
+                    onClick={() => handleDelete(student.id)}
                   >
                     apagar
                   </button>
