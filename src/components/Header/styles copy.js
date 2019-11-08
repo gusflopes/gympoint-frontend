@@ -4,39 +4,38 @@ import { Link } from 'react-router-dom';
 export const Container = styled.div`
   display: flex;
   flex: 1;
-  flex-flow: row wrap;
-
   width: 100%;
-  max-height: 65px;
+  max-height: 64px;
   background: #ffffff;
-
   align-items: center;
   justify-content: space-between;
-
   margin: 0 auto;
   border: solid 1px #ddd;
-  padding: 0 30px;
+
+  nav {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    align-items: center;
+  }
+
+  img {
+    margin: 0 30px 0 30px;
+    height: 24px;
+    align-self: center;
+  }
 `;
 
 export const Content = styled.div`
   display: flex;
   flex-direction: row;
-  flex-flow: row wrap;
-
-  img {
-    height: 24px;
-    align-self: center;
-  }
-
-  nav {
-    display: flex;
-    align-items: center;
-  }
+  width: 100%;
 `;
 
 export const NavItem = styled(Link)`
   display: flex;
   flex-direction: row;
+  width: 100%;
   height: 100%;
 
   text-align: center;
@@ -60,13 +59,13 @@ export const NavItem = styled(Link)`
 `;
 
 export const Profile = styled.div`
+  width: 200px;
   display: flex;
-  justify-content: flex-end;
   justify-self: left;
   align-content: center;
   flex-direction: column;
+  margin: 0 30px 0 30px;
   text-align: center;
-  width: 200px;
 
   strong {
     font-weight: bold;
