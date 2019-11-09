@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
@@ -8,15 +8,31 @@ import history from '~/services/history';
 
 import { Container, Menu, MenuBar, Content, StudentForm } from './styles';
 
-export default function StudentDetails() {
-  const initialData = {
-    id: '',
+export default function StudentDetails({ ...props }) {
+  const [studentId] = useState(props.match.params.id);
+  const [edit, setEdit] = useState(true);
+  const [initialData, setInitialData] = useState({
     name: '',
     email: '',
     age: '',
     weight: '',
     height: '',
-  };
+  });
+
+  useEffect(() => {
+    if (!studentId) {
+      setEdit(false);
+      return console.log('Sem student ID');
+    }
+    console.log('Com student ID');
+
+    async function loadStudent() {
+      const { data } = await api.get(`students/${studentId}`);
+      setInitialData(data);
+    }
+
+    loadStudent();
+  }, [studentId]);
 
   const yupMessage = {
     email: 'Insira um email válido',
@@ -45,17 +61,25 @@ export default function StudentDetails() {
   });
 
   async function handleSubmit(data) {
-    const response = await api.post('students', data);
-    console.log(JSON.stringify(response.data));
+    if (edit === true) {
+      console.log('Editando');
+      const response = await api.put(`students/${studentId}`, data);
+      console.log(JSON.stringify(response.data));
+      return history.goBack();
+    }
 
-    const dados = JSON.stringify(data);
-    console.log(`Submit clicado: ${dados}`);
+    console.log('Criando novo');
+    const response = await api.post('students/', data);
+    console.log(JSON.stringify(response.data));
+    history.goBack();
   }
 
   return (
     <Container>
       <Menu>
-        <strong>Cadastro de Aluno</strong>
+        <strong>
+          {edit === true ? 'Edição de Aluno' : 'Cadastro de Aluno'}
+        </strong>
         <MenuBar>
           <button
             className="btnBack"

@@ -4,9 +4,10 @@ import { Form } from '@rocketseat/unform';
 import colors from '~/styles/colors';
 
 export const Container = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  width: 100%;
   max-width: 900px;
 `;
 
@@ -15,7 +16,6 @@ export const Menu = styled.div`
   width: 100%;
   flex-direction: row;
   margin: 35px 0 20px 0;
-  background: #d3d3d3;
   text-align: center;
   height: 36px;
 
@@ -97,17 +97,17 @@ export const Content = styled.div`
   flex-direction: row;
   width: 100%;
   background: #fff;
+  border-radius: 4px;
 `;
 
 export const StudentForm = styled(Form)`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   width: 100%;
   margin: 30px 30px 10px 14px;
 
   div {
     display: flex;
-    flex: 1;
     flex-direction: column;
     margin-left: 16px;
     margin-bottom: 20px;
@@ -130,7 +130,7 @@ export const StudentForm = styled(Form)`
     border: solid 1px #dddddd;
 
     font-size: 16px;
-    font-color: #666666;
+    color: #666666;
     padding-left: 15px;
 
     &:focus {

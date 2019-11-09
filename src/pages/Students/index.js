@@ -13,23 +13,20 @@ export default function Students() {
   useEffect(() => {
     async function getStudents() {
       const { data } = await api.get('students');
-      console.log(data);
 
       setStudents(data);
     }
     getStudents();
   }, []);
 
-  function handleEdit(id) {
-    console.log(`Edit clicado - Student.id: ${id}`);
-  }
+  async function handleDelete(id) {
+    if (window.confirm('Deseja deletar este aluno?') === true) {
+      await api.delete(`students/${id}`);
 
-  function handleDelete(id) {
-    setStudents(students.filter(student => student.id !== id));
-
-    // Falta deletar!
-
-    console.log(`Delete clicado: ${id}`);
+      setStudents(students.filter(student => student.id !== id));
+      return;
+    }
+    console.log('Delete cancelado');
   }
 
   function handleSearch(input) {
@@ -54,7 +51,10 @@ export default function Students() {
       <Menu>
         <strong>Gerenciando alunos</strong>
         <MenuBar>
-          <button type="button" onClick={() => history.push('/add-student')}>
+          <button
+            type="button"
+            onClick={() => history.push('/students/details')}
+          >
             <MdAdd size={24} />
             CADASTRAR
           </button>
@@ -93,7 +93,9 @@ export default function Students() {
                   <button
                     className="edit"
                     type="button"
-                    onClick={() => handleEdit(student.id)}
+                    onClick={() =>
+                      history.push(`/students/details/${student.id}`)
+                    }
                   >
                     editar
                   </button>
