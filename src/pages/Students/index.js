@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { MdAdd, MdSearch } from 'react-icons/md';
-import api from '~/services/api';
 
-import { Container, Menu, Content, SearchBar } from './styles';
+import api from '~/services/api';
+import history from '~/services/history';
+
+import { Container, Menu, MenuBar, SearchBar, Content, Table } from './styles';
 
 export default function Students() {
   const [students, setStudents] = useState([]);
@@ -51,11 +53,13 @@ export default function Students() {
     <Container>
       <Menu>
         <strong>Gerenciando alunos</strong>
-        <SearchBar>
-          <button type="button" onClick={() => console.log('Cadastrar')}>
+        <MenuBar>
+          <button type="button" onClick={() => history.push('/add-student')}>
             <MdAdd size={24} />
             CADASTRAR
           </button>
+        </MenuBar>
+        <SearchBar>
           <div>
             <MdSearch size={24} />
             <input
@@ -70,7 +74,7 @@ export default function Students() {
       </Menu>
 
       <Content>
-        <table>
+        <Table>
           <thead>
             <tr>
               <th>NOME</th>
@@ -104,7 +108,7 @@ export default function Students() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </Content>
     </Container>
   );

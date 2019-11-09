@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
+import { Form } from '@rocketseat/unform';
 import colors from '~/styles/colors';
 
 export const Container = styled.div`
-  display: flex;
   width: 100%;
+  display: flex;
   flex-direction: column;
   max-width: 900px;
 `;
@@ -20,12 +21,15 @@ export const Menu = styled.div`
 
   font-size: 24px;
   font-weight: bold;
+
+  strong {
+    color: #666;
+  }
 `;
 
-export const SearchBar = styled.div`
+export const MenuBar = styled.div`
   display: flex;
   flex: 1;
-  flex-direction: row;
   justify-content: flex-end;
 
   button {
@@ -47,6 +51,20 @@ export const SearchBar = styled.div`
       background-color: ${darken(0.03, '#ee4d64')};
     }
   }
+  .btnBack {
+    background-color: #999;
+
+    &:hover {
+      background-color: ${darken(0.03, '#999')};
+    }
+  }
+`;
+
+export const SearchBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 240px;
 
   div {
     display: flex;
@@ -55,7 +73,6 @@ export const SearchBar = styled.div`
     align-items: center;
 
     flex-grow: 1;
-    max-width: 240px;
     color: #999;
 
     svg {
@@ -80,12 +97,56 @@ export const Content = styled.div`
   flex-direction: row;
   width: 100%;
   background: #fff;
+`;
 
-  table {
+export const StudentForm = styled(Form)`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  margin: 30px 30px 10px 14px;
+
+  div {
+    display: flex;
     flex: 1;
-    display: table;
-    border-collapse: separate;
+    flex-direction: column;
+    margin-left: 16px;
+    margin-bottom: 20px;
   }
+
+  strong {
+    font-size: 14px;
+    color: #444444;
+    margin-bottom: 5px;
+  }
+
+  span {
+    color: red;
+  }
+
+  input {
+    background: #ffffff;
+    height: 45px;
+    border-radius: 4px;
+    border: solid 1px #dddddd;
+
+    font-size: 16px;
+    font-color: #666666;
+    padding-left: 15px;
+
+    &:focus {
+      border-color: #7159c1 !important;
+    }
+  }
+
+  .fullSize {
+    grid-column: 1/4;
+  }
+`;
+
+export const Table = styled.table`
+  flex: 1;
+  display: table;
+  border-collapse: separate;
 
   thead th {
     text-align: left;
