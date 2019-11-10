@@ -20,18 +20,16 @@ export default function Students() {
   }, []);
 
   async function handleDelete(id) {
+    // eslint-disable-next-line no-alert
     if (window.confirm('Deseja deletar este aluno?') === true) {
       await api.delete(`students/${id}`);
 
       setStudents(students.filter(student => student.id !== id));
-      return;
     }
-    console.log('Delete cancelado');
   }
 
   function handleSearch(input) {
     setSearch(input);
-    console.log(input);
   }
 
   async function handleKeyPress(key) {
@@ -48,30 +46,32 @@ export default function Students() {
 
   return (
     <Container>
-      <Menu>
-        <strong>Gerenciando alunos</strong>
-        <MenuBar>
-          <button
-            type="button"
-            onClick={() => history.push('/students/details')}
-          >
-            <MdAdd size={24} />
-            CADASTRAR
-          </button>
-        </MenuBar>
-        <SearchBar>
-          <div>
-            <MdSearch size={24} />
-            <input
-              type="text"
-              value={search}
-              onChange={e => handleSearch(e.target.value)}
-              onKeyPress={e => handleKeyPress(e.key)}
-              placeholder="Buscar aluno"
-            />
-          </div>
-        </SearchBar>
-      </Menu>
+      <Container>
+        <Menu>
+          <strong>Gerenciando alunos</strong>
+          <MenuBar>
+            <button
+              type="button"
+              onClick={() => history.push('/students/details')}
+            >
+              <MdAdd size={24} />
+              CADASTRAR
+            </button>
+          </MenuBar>
+          <SearchBar>
+            <div>
+              <MdSearch size={24} />
+              <input
+                type="text"
+                value={search}
+                onChange={e => handleSearch(e.target.value)}
+                onKeyPress={e => handleKeyPress(e.key)}
+                placeholder="Buscar aluno"
+              />
+            </div>
+          </SearchBar>
+        </Menu>
+      </Container>
 
       <Content>
         <Table>

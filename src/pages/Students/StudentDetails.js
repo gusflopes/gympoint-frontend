@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
-import { MdChevronLeft, MdCheck } from 'react-icons/md';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import { Container, Menu, MenuBar, Content, StudentForm } from './styles';
+import { Container, Content, StudentForm } from './styles';
+
+import DetailsMenu from '~/components/DetailsMenu';
 
 export default function StudentDetails({ ...props }) {
   const [studentId] = useState(props.match.params.id);
@@ -76,25 +77,8 @@ export default function StudentDetails({ ...props }) {
 
   return (
     <Container>
-      <Menu>
-        <strong>
-          {edit === true ? 'Edição de Aluno' : 'Cadastro de Aluno'}
-        </strong>
-        <MenuBar>
-          <button
-            className="btnBack"
-            type="button"
-            onClick={() => history.goBack()}
-          >
-            <MdChevronLeft size={24} />
-            VOLTAR
-          </button>
-          <button type="submit" form="studentForm">
-            <MdCheck size={24} />
-            SALVAR
-          </button>
-        </MenuBar>
-      </Menu>
+      <DetailsMenu name="Aluno" form="studentForm" edit={edit} />
+
       <Content>
         <StudentForm
           schema={schema}

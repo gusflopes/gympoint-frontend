@@ -8,6 +8,8 @@ import Students from '~/pages/Students';
 import StudentDetails from '~/pages/Students/StudentDetails';
 
 import Plans from '~/pages/Plans';
+import PlanDetails from '~/pages/Plans/PlanDetails';
+
 import Enrollments from '~/pages/Enrollments';
 import HelpOrders from '~/pages/HelpOrders';
 
@@ -28,11 +30,20 @@ export default function Routes() {
         component={StudentDetails}
         isPrivate
       />
-
       <Route path="/students" component={Students} isPrivate />
 
+      <Route path="/plans/details" exact component={PlanDetails} isPrivate />
+      <Route
+        path="/plans/details/:id"
+        exact
+        component={PlanDetails}
+        isPrivate
+      />
+
       <Route path="/plans" component={Plans} isPrivate />
+
       <Route path="/enrollments" component={Enrollments} isPrivate />
+
       <Route path="/help-orders" component={HelpOrders} isPrivate />
 
       <Route path="/" component={() => <h1>404</h1>} />
