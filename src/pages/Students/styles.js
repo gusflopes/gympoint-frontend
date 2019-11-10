@@ -125,6 +125,7 @@ export const StudentForm = styled(Form)`
 
   input {
     background: #ffffff;
+    width: 100%;
     height: 45px;
     border-radius: 4px;
     border: solid 1px #dddddd;

@@ -19,10 +19,10 @@ export default function Header() {
       <Content>
         <img src={logo} alt="GymPoint" />
         <nav>
-          <NavItem to="students">ALUNOS</NavItem>
-          <NavItem to="plans">PLANOS</NavItem>
-          <NavItem to="enrollments">MATRÍCULAS</NavItem>
-          <NavItem to="help-orders">PEDIDOS DE AUXÍLIO</NavItem>
+          <NavItem to="/students">ALUNOS</NavItem>
+          <NavItem to="/plans">PLANOS</NavItem>
+          <NavItem to="/enrollments">MATRÍCULAS</NavItem>
+          <NavItem to="/help-orders">PEDIDOS DE AUXÍLIO</NavItem>
         </nav>
       </Content>
 

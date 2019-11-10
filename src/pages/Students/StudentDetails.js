@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {  useParams } from 'react-router-dom';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
@@ -9,31 +10,20 @@ import { Container, Content, StudentForm } from './styles';
 
 import DetailsMenu from '~/components/DetailsMenu';
 
-export default function StudentDetails({ ...props }) {
-  const [studentId] = useState(props.match.params.id);
-  const [edit, setEdit] = useState(true);
-  const [initialData, setInitialData] = useState({
-    name: '',
-    email: '',
-    age: '',
-    weight: '',
-    height: '',
-  });
+export default function StudentDetails() {
+  const {id} = useParams();
+  const [student, setStudent] = useState();
 
-  useEffect(() => {
-    if (!studentId) {
-      setEdit(false);
-      return console.log('Sem student ID');
-    }
-    console.log('Com student ID');
+      useEffect(() => {
 
-    async function loadStudent() {
-      const { data } = await api.get(`students/${studentId}`);
-      setInitialData(data);
-    }
-
-    loadStudent();
-  }, [studentId]);
+        async function loadStudent() {
+          const { data } = await api.get(`students/${id}`);
+          setStudent(data);
+        }
+        if (id) {
+            loadStudent();
+        }
+      }, [id]);
 
   const yupMessage = {
     email: 'Insira um email válido',
@@ -62,29 +52,25 @@ export default function StudentDetails({ ...props }) {
   });
 
   async function handleSubmit(data) {
-    if (edit === true) {
-      console.log('Editando');
-      const response = await api.put(`students/${studentId}`, data);
-      console.log(JSON.stringify(response.data));
+    if (id) {
+      await api.put(`students/${id}`, data);
       return history.goBack();
     }
 
-    console.log('Criando novo');
-    const response = await api.post('students/', data);
-    console.log(JSON.stringify(response.data));
+    await api.post('students/', data);
     history.goBack();
   }
 
   return (
     <Container>
-      <DetailsMenu name="Aluno" form="studentForm" edit={edit} />
+      <DetailsMenu name="Aluno" form="studentForm" edit={id?true:false} />
 
       <Content>
         <StudentForm
           schema={schema}
           id="studentForm"
           onSubmit={handleSubmit}
-          initialData={initialData}
+          initialData={student}
         >
           <div className="fullSize">
             <strong>NOME COMPLETO</strong>

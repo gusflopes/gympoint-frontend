@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
@@ -10,29 +11,22 @@ import { Container, Content, PlanForm } from './styles';
 
 import DetailsMenu from '~/components/DetailsMenu';
 
-export default function PlanDetails({ ...props }) {
-  const { id } = props.match.params;
-  const [edit, setEdit] = useState(true);
-  const plan = useSelector(state => state.plan.plan);
-
-  const [initialData, setInitialData] = useState({
-    title: '',
-    duration: '',
-    price: '',
-    totalPrice: '',
-  });
+export default function PlanDetails() {
+  const { id } = useParams();
+  const [plan, setPlan] = useState();
+  const redux = useSelector(state => state.plan.plan);
 
   useEffect(() => {
-    if (!id) {
-      setEdit(false);
-    }
-
     async function loadPlan() {
-      setInitialData(plan);
+      if (id) {
+        await setPlan(redux);
+        console.log('Id = true');
+        return
+      }
+      console.log('Id = false');
     }
-
     loadPlan();
-  }, [plan, id]);
+  }, []);
 
   const yupMessage = {
     required: 'Este campo é obrigatório',
@@ -51,9 +45,9 @@ export default function PlanDetails({ ...props }) {
   });
 
   async function handleSubmit(data) {
-    if (edit === true) {
+    if (id) {
       console.log('Editando');
-      const response = await api.put(`plans/${id}`, data);
+      const response = await api.put(`plans/${plan.id}`, data);
       console.log(JSON.stringify(response.data));
       return history.goBack();
     }
@@ -61,19 +55,19 @@ export default function PlanDetails({ ...props }) {
     console.log('Criando novo');
     const response = await api.post('plans/', data);
     console.log(JSON.stringify(response.data));
-    history.goBack();
+    return history.goBack();
   }
 
   return (
     <Container>
-      <DetailsMenu name="Plano" form="planForm" edit={edit} />
+      <DetailsMenu name="Plano" form="planForm" edit={id?true:false} />
 
       <Content>
         <PlanForm
           schema={schema}
           id="planForm"
           onSubmit={handleSubmit}
-          initialData={initialData}
+          initialData={plan}
         >
           <div className="fullSize">
             <strong>TÍTULO DO PLANO</strong>

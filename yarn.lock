@@ -8439,6 +8439,11 @@ react-app-rewired@^2.1.4:
   dependencies:
     semver "^5.6.0"
 
+react-currency-input-field@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-currency-input-field/-/react-currency-input-field-0.2.0.tgz#ef8d34cb2613b3302b93dd4efd7cba1a01b0fc88"
+  integrity sha512-qgcdN9eW/nqOfq4+7jYAluMS3sFG+22noODBGQ0OOI2kaIHU2pnXK8EODuRPf5mTmSPjiNYma7od8XIH+HlLww==
+
 react-dev-utils@^9.1.0:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-9.1.0.tgz#3ad2bb8848a32319d760d0a84c56c14bdaae5e81"
@@ -8506,6 +8511,13 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-number-format@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-number-format/-/react-number-format-4.3.1.tgz#eccfc851d88d74c894ba463620ccb467defbdefb"
+  integrity sha512-ze6Lp7SGM71Jr0uZhUaN6grthv08NKTfJezS26zAWZq63ubmJ++FOX7ueGSK27EvpT7/e3ce9L3jlqr1YMFS7Q==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-redux@^7.1.3:
   version "7.1.3"
