@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Input } from '@rocketseat/unform';
@@ -8,25 +8,23 @@ import api from '~/services/api';
 import history from '~/services/history';
 
 import { Container, Content, PlanForm } from './styles';
+import CurrencyInput from '~/components/CurrencyInput';
 
 import DetailsMenu from '~/components/DetailsMenu';
 
 export default function PlanDetails() {
   const { id } = useParams();
   const [plan, setPlan] = useState();
-  const redux = useSelector(state => state.plan.plan);
+  const activePlan = useSelector(state => state.plan.plan);
 
-  useEffect(() => {
+  useMemo(() => {
     async function loadPlan() {
       if (id) {
-        await setPlan(redux);
-        console.log('Id = true');
-        return
+        await setPlan(activePlan);
       }
-      console.log('Id = false');
     }
     loadPlan();
-  }, []);
+  }, [activePlan, id]);
 
   const yupMessage = {
     required: 'Este campo é obrigatório',
@@ -41,7 +39,7 @@ export default function PlanDetails() {
       .integer(yupMessage.integer)
       .truncate()
       .typeError(yupMessage.number),
-    price: Yup.number().typeError(yupMessage.number),
+    price: Yup.string().typeError(yupMessage.number),
   });
 
   async function handleSubmit(data) {
@@ -53,6 +51,7 @@ export default function PlanDetails() {
     }
 
     console.log('Criando novo');
+    console.log(JSON.stringify(data));
     const response = await api.post('plans/', data);
     console.log(JSON.stringify(response.data));
     return history.goBack();
@@ -60,7 +59,7 @@ export default function PlanDetails() {
 
   return (
     <Container>
-      <DetailsMenu name="Plano" form="planForm" edit={id?true:false} />
+      <DetailsMenu name="Plano" form="planForm" edit={!!id} />
 
       <Content>
         <PlanForm
@@ -79,7 +78,7 @@ export default function PlanDetails() {
           </div>
           <div>
             <strong>PREÇO MENSAL</strong>
-            <Input name="price" />
+            <CurrencyInput name="price" isNumericString />
           </div>
           <div>
             <strong>PREÇO TOTAL</strong>
