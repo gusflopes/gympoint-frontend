@@ -27,7 +27,7 @@ export const Menu = styled.div`
   }
 `;
 
-export const MenuBar = styled.div`
+export const TitleBar = styled.div`
   display: flex;
   flex: 1;
   justify-content: flex-end;

@@ -10,7 +10,7 @@ export default function CurrencyInput({
   getChange,
 }) {
   const ref = useRef();
-  const { fieldName, defaultValue, registerField } = useField(name);
+  const { fieldName, defaultValue, registerField, error } = useField(name);
   const [value, setValue] = useState(defaultValue);
   const [importedValue, setImportedValue] = useState();
 
@@ -49,6 +49,7 @@ export default function CurrencyInput({
         }}
         disabled={!!disabled}
       />
+      {error && <span>{error}</span>}
     </>
   );
 }

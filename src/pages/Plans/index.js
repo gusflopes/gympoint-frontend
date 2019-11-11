@@ -54,7 +54,7 @@ export default function Plans() {
 
   return (
     <Container>
-      <MenuBar title="planos" route="plans" />
+      <MenuBar title="Gerenciando planos" route="plans" />
 
       <Content>
         <Table>

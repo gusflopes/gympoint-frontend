@@ -4,27 +4,34 @@ import PropTypes from 'prop-types';
 import { MdAdd } from 'react-icons/md';
 import history from '~/services/history';
 
-import { Menu, MenuBar } from './styles';
+import { Menu, TitleBar } from './styles';
 
-export default function SearchMenu(props) {
+export default function MenuBar(props) {
   const { route, title } = props;
-
-  // <SearchMenu title="Alunos" route="students" />
 
   return (
     <Menu>
-      <strong>Gerenciando {title}</strong>
-      <MenuBar>
-        <button type="button" onClick={() => history.push(`/${route}/details`)}>
-          <MdAdd size={24} />
-          CADASTRAR
-        </button>
-      </MenuBar>
+      <strong>{title}</strong>
+      <TitleBar>
+        {route ? (
+          <button
+            type="button"
+            onClick={() => history.push(`/${route}/details`)}
+          >
+            <MdAdd size={24} />
+            CADASTRAR
+          </button>
+        ) : null}
+      </TitleBar>
     </Menu>
   );
 }
 
-SearchMenu.propTypes = {
-  route: PropTypes.string.isRequired,
+MenuBar.defaultProps = {
+  route: null,
+};
+
+MenuBar.propTypes = {
+  route: PropTypes.string,
   title: PropTypes.string.isRequired,
 };

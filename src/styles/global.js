@@ -1,5 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import 'react-toastify/dist/ReactToastify.css';
+import colors from './colors';
 
 // import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -32,5 +33,68 @@ export default createGlobalStyle`
   }
   button {
     cursor: pointer;
+  }
+`;
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
+`;
+
+export const Content = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  width: 100%;
+  background: #fff;
+  border-radius: 4px;
+`;
+
+export const Table = styled.table`
+  flex: 1;
+  display: table;
+  border-collapse: separate;
+
+  thead th {
+    text-align: left;
+    color: #444;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 20px 10px;
+    border-bottom: 1px solid #eee;
+
+    &:nth-child(n + 2) {
+      text-align: center;
+    }
+  }
+
+  tbody td {
+    padding: 20px 10px;
+    font-size: 16px;
+    color: #666;
+    border-bottom: 1px solid #eee;
+
+    &:nth-child(n + 2) {
+      text-align: center;
+    }
+
+    &:nth-child(4) {
+    }
+
+    button {
+      margin: 0 10px;
+      border: 0;
+      background-color: #fff;
+    }
+
+    .edit {
+      color: ${colors.btnPrimary};
+    }
+    .delete {
+      color: ${colors.btnSecondary};
+    }
   }
 `;
