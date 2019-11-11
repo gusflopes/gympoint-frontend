@@ -10,3 +10,10 @@ export function planDetails(data) {
     payload: { data },
   };
 }
+
+export function planPriceUpdate(data) {
+  return {
+    type: '@plan/PRICE_UPDATE_REQUEST',
+    payload: { data },
+  };
+}

@@ -9,6 +9,8 @@ import { planDetails } from '~/store/modules/plan/actions';
 import { Container, Content, Table } from './styles';
 import MenuBar from '~/components/MenuBar';
 
+import { formatCurrency, formatDuration } from '~/utils/format';
+
 export default function Plans() {
   const dispatch = useDispatch();
 
@@ -16,7 +18,13 @@ export default function Plans() {
 
   useEffect(() => {
     async function getPlans() {
-      const { data } = await api.get('plans');
+      const response = await api.get('plans');
+
+      const data = response.data.map(plan => ({
+        ...plan,
+        priceFormatted: formatCurrency(plan.price),
+        durationFormatted: formatDuration(plan.duration),
+      }));
 
       setPlans(data);
     }
@@ -61,15 +69,8 @@ export default function Plans() {
             {plans.map(plan => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{`${plan.duration} ${
-                  plan.duration > 1 ? 'meses' : 'mês'
-                }`}</td>
-                <td>
-                  {new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  }).format(plan.price)}
-                </td>
+                <td>{plan.durationFormatted}</td>
+                <td>{plan.priceFormatted}</td>
                 <td>
                   <button
                     className="edit"

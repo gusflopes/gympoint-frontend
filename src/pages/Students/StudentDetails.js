@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
@@ -11,19 +11,18 @@ import { Container, Content, StudentForm } from './styles';
 import DetailsMenu from '~/components/DetailsMenu';
 
 export default function StudentDetails() {
-  const {id} = useParams();
+  const { id } = useParams();
   const [student, setStudent] = useState();
 
-      useEffect(() => {
-
-        async function loadStudent() {
-          const { data } = await api.get(`students/${id}`);
-          setStudent(data);
-        }
-        if (id) {
-            loadStudent();
-        }
-      }, [id]);
+  useEffect(() => {
+    async function loadStudent() {
+      const { data } = await api.get(`students/${id}`);
+      setStudent(data);
+    }
+    if (id) {
+      loadStudent();
+    }
+  }, [id]);
 
   const yupMessage = {
     email: 'Insira um email válido',
@@ -63,7 +62,7 @@ export default function StudentDetails() {
 
   return (
     <Container>
-      <DetailsMenu name="Aluno" form="studentForm" edit={id?true:false} />
+      <DetailsMenu name="Aluno" form="studentForm" edit={!!id} />
 
       <Content>
         <StudentForm
