@@ -16,8 +16,7 @@ export default function CurrencyInput({ name, disabled }) {
         path: 'props.value',
         clearValue: pickerRef => {
           pickerRef.setInputValue(null);
-        }
-  
+        },
       });
     }
   }, [ref, fieldName]); // eslint-disable-line
@@ -32,12 +31,10 @@ export default function CurrencyInput({ name, disabled }) {
         decimalScale={2}
         prefix="R$ "
         ref={ref}
-        mask='_'
         name={fieldName}
         value={value}
         onValueChange={values => {
           setValue(values.floatValue);
-          console.log(values.floatValue);
         }}
         disabled={!!disabled}
       />

@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Input } from '@rocketseat/unform';
+
 import * as Yup from 'yup';
 
+import { toast } from 'react-toastify';
+import { Input } from '@rocketseat/unform';
 import api from '~/services/api';
 import history from '~/services/history';
 
@@ -37,29 +39,26 @@ export default function PlanDetails() {
     title: Yup.string().required(yupMessage.required),
     duration: Yup.number()
       .integer(yupMessage.integer)
-      .truncate()
+      .required(yupMessage.required)
       .typeError(yupMessage.number),
-    price: Yup.string().typeError(yupMessage.number),
+    price: Yup.string()
+      .typeError(yupMessage.number)
+      .required(yupMessage.required),
   });
 
   async function handleSubmit(data) {
-    if (id) {
-      console.log('Editando');
-      console.log(JSON.stringify(data));
-      try{
-        const response = await api.put(`plans/${plan.id}`, data);
-        console.log(JSON.stringify(response));
-      } catch(err) {
-        console.log(err);
+    try {
+      if (id) {
+        await api.put(`plans/${plan.id}`, data);
+        return history.goBack();
       }
-      return history.goBack();
-    }
 
-    console.log('Criando novo');
-    console.log(JSON.stringify(data));
-    const response = await api.post('plans/', data);
-    console.log(JSON.stringify(response.data));
-    return history.goBack();
+      await api.post('plans/', data);
+      return history.goBack();
+    } catch (err) {
+      const { error } = err.response.data;
+      toast.error(error);
+    }
   }
 
   return (
@@ -83,11 +82,11 @@ export default function PlanDetails() {
           </div>
           <div>
             <strong>PREÇO MENSAL</strong>
-            <CurrencyInput name="price" inputMask="" />
+            <CurrencyInput name="price" />
           </div>
           <div>
             <strong>PREÇO TOTAL</strong>
-            <Input disabled name="totalPrice" />
+            <CurrencyInput disabled name="totalPrice" />
           </div>
         </PlanForm>
       </Content>
