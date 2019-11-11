@@ -61,8 +61,15 @@ export default function Plans() {
             {plans.map(plan => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{plan.duration}</td>
-                <td>{plan.price}</td>
+                <td>{`${plan.duration} ${
+                  plan.duration > 1 ? 'meses' : 'mês'
+                }`}</td>
+                <td>
+                  {new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(plan.price)}
+                </td>
                 <td>
                   <button
                     className="edit"
