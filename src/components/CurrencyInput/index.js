@@ -13,7 +13,11 @@ export default function CurrencyInput({ name, disabled }) {
       registerField({
         name: fieldName,
         ref: ref.current,
-        parseValue: value,
+        path: 'props.value',
+        clearValue: pickerRef => {
+          pickerRef.setInputValue(null);
+        }
+  
       });
     }
   }, [ref, fieldName]); // eslint-disable-line
@@ -28,6 +32,7 @@ export default function CurrencyInput({ name, disabled }) {
         decimalScale={2}
         prefix="R$ "
         ref={ref}
+        mask='_'
         name={fieldName}
         value={value}
         onValueChange={values => {

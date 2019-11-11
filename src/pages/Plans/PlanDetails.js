@@ -45,8 +45,13 @@ export default function PlanDetails() {
   async function handleSubmit(data) {
     if (id) {
       console.log('Editando');
-      const response = await api.put(`plans/${plan.id}`, data);
-      console.log(JSON.stringify(response.data));
+      console.log(JSON.stringify(data));
+      try{
+        const response = await api.put(`plans/${plan.id}`, data);
+        console.log(JSON.stringify(response));
+      } catch(err) {
+        console.log(err);
+      }
       return history.goBack();
     }
 
@@ -78,7 +83,7 @@ export default function PlanDetails() {
           </div>
           <div>
             <strong>PREÇO MENSAL</strong>
-            <CurrencyInput name="price" isNumericString />
+            <CurrencyInput name="price" inputMask="" />
           </div>
           <div>
             <strong>PREÇO TOTAL</strong>
