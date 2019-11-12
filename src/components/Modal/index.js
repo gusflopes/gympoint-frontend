@@ -1,55 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactModal from 'react-modal';
 import PropTypes from 'prop-types';
 
-import { Container } from './styles';
+// import { Button } from './styles';
 
 const customStyles = {
   content: {
-    position: 'absolute',
-    top: '35%',
+    top: '25%',
     left: '50%',
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    width: '40%',
+    width: '450px',
     transform: 'translate(-50%, -10%)',
   },
 };
 
-export default function AnswerModal(props) {
+export default function Modal(props) {
+  const { title, button, children, onLoad } = props;
   const [showModal, setShowModal] = useState(false);
-  const { title } = props;
 
-  function initialLoad() {
-    console.log('Initial load');
+  function callbackModal() {
+    setShowModal(false);
   }
 
+  useEffect(() => {
+    setShowModal(false);
+  }, []);
+
   return (
-    <div>
-      <button type="button" onClick={() => setShowModal(true)}>
+    <>
+      <button
+        type="button"
+        style={{ color: '#4d85ee' }}
+        onClick={() => setShowModal(true)}
+      >
         {title}
       </button>
 
       <ReactModal
-        onAfterOpen={initialLoad}
+        onAfterOpen={onLoad}
         isOpen={showModal}
-        contentLabel="Exemplo de Modal"
         style={customStyles}
         onRequestClose={() => setShowModal(false)}
+        ariaHideApp={false}
       >
-        <h1>Modal do Lego</h1>
-        <div>
-          <p>Description of the modal.</p>
-        </div>
-        <button type="button" onClick={() => setShowModal(false)}>
-          Close Modal
-        </button>
+        {children}
       </ReactModal>
-    </div>
+    </>
   );
 }
 
-AnswerModal.propTypes = {
+Modal.defaultProps = {
+  onLoad: null,
+};
+
+Modal.propTypes = {
   title: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
+  children: PropTypes.element.isRequired,
+  onLoad: PropTypes.func,
 };

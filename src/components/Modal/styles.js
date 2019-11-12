@@ -1,12 +1,22 @@
 import styled from 'styled-components';
-import ModalReact from 'react-modal';
+import { darken } from 'polished';
 
-export const Container = styled.div``;
+export const Button = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-export const Modal = styled(ModalReact)`
-  .modal-body {
-    height: 200px;
-    width: 200px;
-    border: 1px solid #7159c1;
+  width: 100%;
+  height: 45px;
+  border-radius: 4px;
+  border: 0;
+  font-weight: bold;
+  background-color: #ee4d64;
+  color: #fff;
+  border: 1px solid #dddddd;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: ${darken(0.03, '#ee4d64')};
   }
 `;
