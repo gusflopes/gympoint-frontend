@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
 
-export const Wrapper = styled.div`
+export const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

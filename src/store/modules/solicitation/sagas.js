@@ -9,13 +9,21 @@ import {
 import history from '~/services/history';
 import api from '~/services/api';
 
-export function* planList() {
-  const data = yield call(api.get, '/plans');
-  console.log('data');
+export function* updateHelpOrder(data) {
+  // const data = yield call(api.get, '/plans');
+  const { answer } = data.payload;
 
-  yield put(solicitationDetails(data));
+  // const payload = yield select(solicitation);
+
+  /** *
+   * ATUALIZAR A RESPOSTA NA API !!!!!!
+   */
+
+  console.log(answer);
+
+  yield put(solicitationAnswerSuccess(data));
 }
 
 export default all([
-  takeLatest('@solicitation/LIST_REQUEST', solicitationAnswerRequest),
+  takeLatest('@solicitation/ANSWER_REQUEST', updateHelpOrder),
 ]);

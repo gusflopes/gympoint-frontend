@@ -5,10 +5,10 @@ export function solicitationDetails(data) {
   };
 }
 
-export function solicitationAnswerRequest(data) {
+export function solicitationAnswerRequest(answer) {
   return {
     type: '@solicitation/ANSWER_REQUEST',
-    payload: { data },
+    payload: { answer },
   };
 }
 
