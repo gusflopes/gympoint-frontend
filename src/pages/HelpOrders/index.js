@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
+
 import { Form, Input } from '@rocketseat/unform';
+import ReactModal from 'react-modal';
+import MenuBar from '~/components/MenuBar';
 
 import { Container, Content, Table } from '~/styles/global';
-import ReactModal from '~/components/Modal';
 import { Wrapper } from './styles';
 
 import api from '~/services/api';
 
-import MenuBar from '~/components/MenuBar';
+const customStyles = {
+  content: {
+    top: '25%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    width: '450px',
+    transform: 'translate(-50%, -10%)',
+  },
+};
 
 export default function HelpOrders() {
   const [helporders, setHelporders] = useState([]);
+  const [activeForm, setActiveForm] = useState();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -22,21 +36,28 @@ export default function HelpOrders() {
     loadData();
   }, []);
 
-  function modalLoad() {
-    // Função sendo chamada quando o Modal carrega
-    console.log('Modal carregado');
+  async function handleSubmit(data) {
+    // Handle with the API
+    console.log(`Data: ${JSON.stringify(data)}`);
+    console.log(`Active Form: ${activeForm}`);
+
+    const response = await api.post(`help-orders/${activeForm}/answer`, data);
+    const { id } = response.data;
+    console.log(`Id: ${id} e JSON: ${JSON.stringify(response.data)}`);
+    // Handle with React
+    setHelporders(helporders.filter(helporder => helporder.id !== id));
+    // Close Modal
+    setShowModal(false);
   }
 
-  function handleSubmit(data) {
-    console.log(data);
-    api.post(`help-orders/${data.id}/answer`, data);
+  /** *
+   * BUG - ESTÁ ABRINDO MODAL COM A HELPORDER ERRADA !!
+   */
 
-    // Refatorar isso - fechando o Modal aqui
-    document.getElementById('AnswerForm').submit();
-  }
-
-  function closeModal() {
-    console.log('teste');
+  function botaoClicado(e) {
+    const { id } = e.target;
+    setActiveForm(id);
+    console.log(`Active Form: ${id}`);
   }
 
   return (
@@ -58,27 +79,38 @@ export default function HelpOrders() {
               <tr key={helporder.id}>
                 <td>{helporder.student.name}</td>
                 <td>
+                  <button
+                    type="button"
+                    style={{ color: '#4d85ee' }}
+                    id={helporder.id}
+                    onClick={e => {
+                      botaoClicado(e);
+                      setShowModal(true);
+                    }}
+                  >
+                    editar
+                  </button>
+
                   <ReactModal
-                    title="responder"
-                    button="Responder Aluno"
-                    onLoad={modalLoad}
-                    propsFoda={() => closeModal()}
+                    onAfterOpen={() => {}}
+                    isOpen={showModal}
+                    style={customStyles}
+                    onRequestClose={() => {}}
+                    ariaHideApp={false}
                   >
                     <Wrapper>
-                      <Form id="AnswerForm" onSubmit={handleSubmit}>
+                      <Form onSubmit={handleSubmit}>
                         <strong>PERGUNTA DO ALUNO</strong>
                         <p>{helporder.question}</p>
                         <strong> SUA RESPOSTA</strong>
-                        <Input type="hidden" name="id" value={helporder.id} />
                         <Input
+                          id={helporder.id}
                           multiline
                           name="answer"
                           placeholder="Digite sua resposta."
                         />
 
-                        <button onClick={() => {}} type="submit">
-                          Responder Aluno
-                        </button>
+                        <button type="submit">Responder Aluno</button>
                       </Form>
                     </Wrapper>
                   </ReactModal>

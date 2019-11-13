@@ -1,28 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Form, Input } from '@rocketseat/unform';
 
-import ReactModal from 'react-modal';
 import { Container, Content, Table } from '~/styles/global';
+import ReactModal from '~/components/Modal';
 import { Wrapper } from './styles';
 
 import api from '~/services/api';
 
 import MenuBar from '~/components/MenuBar';
 
-const customStyles = {
-  content: {
-    top: '25%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    width: '450px',
-    transform: 'translate(-50%, -10%)',
-  },
-};
-
 export default function HelpOrders() {
   const [helporders, setHelporders] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -35,7 +23,20 @@ export default function HelpOrders() {
   }, []);
 
   function modalLoad() {
-    console.log('Initial load');
+    // Função sendo chamada quando o Modal carrega
+    console.log('Modal carregado');
+  }
+
+  function handleSubmit(data) {
+    console.log(data);
+    api.post(`help-orders/${data.id}/answer`, data);
+
+    // Refatorar isso - fechando o Modal aqui
+    document.getElementById('AnswerForm').submit();
+  }
+
+  function closeModal() {
+    console.log('teste');
   }
 
   return (
@@ -57,38 +58,28 @@ export default function HelpOrders() {
               <tr key={helporder.id}>
                 <td>{helporder.student.name}</td>
                 <td>
-                  <button
-                    className="edit"
-                    type="button"
-                    onClick={() => setShowModal(true)}
-                  >
-                    responder
-                  </button>
-
                   <ReactModal
-                    onAfterOpen={modalLoad}
-                    isOpen={showModal}
-                    style={customStyles}
-                    aria-modal={false}
-                    onRequestClose={() => setShowModal(false)}
+                    title="responder"
+                    button="Responder Aluno"
+                    onLoad={modalLoad}
+                    propsFoda={() => closeModal()}
                   >
                     <Wrapper>
-                      <form>
+                      <Form id="AnswerForm" onSubmit={handleSubmit}>
                         <strong>PERGUNTA DO ALUNO</strong>
-                        <p>
-                          Olá pessoal, gostaria de saber se quando acordar devo
-                          ingerir batata doce e frango logo de primeira,
-                          preparar as marmitas e lotar a geladeira? Dou um pico
-                          de insulina e jogo o hipercalórico?
-                        </p>
+                        <p>{helporder.question}</p>
                         <strong> SUA RESPOSTA</strong>
+                        <Input type="hidden" name="id" value={helporder.id} />
+                        <Input
+                          multiline
+                          name="answer"
+                          placeholder="Digite sua resposta."
+                        />
 
-                        <textarea id="answer">exemplo@email.com</textarea>
-
-                        <button type="submit" onClick={() => alert('Teste')}>
+                        <button onClick={() => {}} type="submit">
                           Responder Aluno
                         </button>
-                      </form>
+                      </Form>
                     </Wrapper>
                   </ReactModal>
                 </td>
@@ -100,4 +91,3 @@ export default function HelpOrders() {
     </Container>
   );
 }
-ReactModal.setAppElement('#root');
