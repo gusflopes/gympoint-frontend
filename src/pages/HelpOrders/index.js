@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Form, Input } from '@rocketseat/unform';
-import ReactModal from 'react-modal';
+import { solicitationDetails } from '~/store/modules/solicitation/actions';
+
 import MenuBar from '~/components/MenuBar';
 
 import { Container, Content, Table } from '~/styles/global';
-import { Wrapper } from './styles';
 
 import api from '~/services/api';
 
-const customStyles = {
-  content: {
-    top: '25%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    width: '450px',
-    transform: 'translate(-50%, -10%)',
-  },
-};
+import FormComponent from './FormComponent';
 
 export default function HelpOrders() {
   const [helporders, setHelporders] = useState([]);
-  const [activeForm, setActiveForm] = useState();
   const [showModal, setShowModal] = useState(false);
+  const activeForm = { id: 1, question: 'Pergunta do aluno', answer: null };
 
+  const dispatch = useDispatch();
+
+  // Load Help Orders
   useEffect(() => {
     async function loadData() {
       const response = await api.get('help-orders');
@@ -36,90 +29,65 @@ export default function HelpOrders() {
     loadData();
   }, []);
 
-  async function handleSubmit(data) {
-    // Handle with the API
-    console.log(`Data: ${JSON.stringify(data)}`);
-    console.log(`Active Form: ${activeForm}`);
+  // Keep track of Modal Open/Close
+  useEffect(() => {
+    console.log(`Modal is ${showModal}`);
+  }, [showModal]);
 
-    const response = await api.post(`help-orders/${activeForm}/answer`, data);
-    const { id } = response.data;
-    console.log(`Id: ${id} e JSON: ${JSON.stringify(response.data)}`);
-    // Handle with React
-    setHelporders(helporders.filter(helporder => helporder.id !== id));
-    // Close Modal
-    setShowModal(false);
-  }
-
-  /** *
-   * BUG - ESTÁ ABRINDO MODAL COM A HELPORDER ERRADA !!
-   */
-
-  function botaoClicado(e) {
-    const { id } = e.target;
-    setActiveForm(id);
-    console.log(`Active Form: ${id}`);
+  // Toggle the Modal
+  function handleModal(event) {
+    const { id } = event.target;
+    setShowModal(!showModal);
+    const solicitation = helporders.find(
+      helporder => helporder.id === Number(id)
+    );
+    dispatch(solicitationDetails(solicitation));
   }
 
   return (
-    <Container>
-      <MenuBar title="Pedidos de auxílio">
-        <h1>Pedidos de auxílio</h1>
-      </MenuBar>
+    <>
+      <Container>
+        <MenuBar title="Pedidos de auxílio">
+          <h1>Pedidos de auxílio</h1>
+        </MenuBar>
 
-      <Content>
-        <Table>
-          <thead>
-            <tr>
-              <th>ALUNO</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {helporders.map(helporder => (
-              <tr key={helporder.id}>
-                <td>{helporder.student.name}</td>
-                <td>
-                  <button
-                    type="button"
-                    style={{ color: '#4d85ee' }}
-                    id={helporder.id}
-                    onClick={e => {
-                      botaoClicado(e);
-                      setShowModal(true);
-                    }}
-                  >
-                    editar
-                  </button>
-
-                  <ReactModal
-                    onAfterOpen={() => {}}
-                    isOpen={showModal}
-                    style={customStyles}
-                    onRequestClose={() => {}}
-                    ariaHideApp={false}
-                  >
-                    <Wrapper>
-                      <Form onSubmit={handleSubmit}>
-                        <strong>PERGUNTA DO ALUNO</strong>
-                        <p>{helporder.question}</p>
-                        <strong> SUA RESPOSTA</strong>
-                        <Input
-                          id={helporder.id}
-                          multiline
-                          name="answer"
-                          placeholder="Digite sua resposta."
-                        />
-
-                        <button type="submit">Responder Aluno</button>
-                      </Form>
-                    </Wrapper>
-                  </ReactModal>
-                </td>
+        <Content>
+          <Table>
+            <thead>
+              <tr>
+                <th>ALUNO</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Content>
-    </Container>
+            </thead>
+            <tbody>
+              {helporders.map(helporder => (
+                <tr key={helporder.id}>
+                  <td>{helporder.student.name}</td>
+                  <td>
+                    <button
+                      id={helporder.id}
+                      onClick={e => handleModal(e)}
+                      type="button"
+                      style={{ color: '#4d85ee' }}
+                    >
+                      editar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Content>
+      </Container>
+      {showModal ? (
+        <Container>
+          <h1>Modal</h1>
+          <button onClick={handleModal} type="button">
+            Fechar
+          </button>
+          <FormComponent id={activeForm.id} question={activeForm.question} />
+        </Container>
+      ) : null}
+    </>
   );
 }

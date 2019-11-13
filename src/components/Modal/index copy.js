@@ -17,17 +17,27 @@ const customStyles = {
 };
 
 export default function Modal(props) {
-  const { children, onLoad } = props;
-  const [showModal, setShowModal] = useState(true);
+  const { title, button, children, onLoad } = props;
+  const [showModal, setShowModal] = useState(false);
 
-  /*
+  function callbackModal() {
+    setShowModal(false);
+  }
+
   useEffect(() => {
     setShowModal(false);
   }, []);
-  */
 
   return (
     <>
+      <button
+        type="button"
+        style={{ color: '#4d85ee' }}
+        onClick={() => setShowModal(true)}
+      >
+        {title}
+      </button>
+
       <ReactModal
         onAfterOpen={onLoad}
         isOpen={showModal}
@@ -46,6 +56,8 @@ Modal.defaultProps = {
 };
 
 Modal.propTypes = {
+  title: PropTypes.string.isRequired,
+  button: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
   onLoad: PropTypes.func,
 };
