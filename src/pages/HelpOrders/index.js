@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input } from '@rocketseat/unform';
 import ReactModal from 'react-modal';
+import { toast } from 'react-toastify';
 import { Container, Content, Table } from '~/styles/global';
 import { ModalContent } from './styles';
 import api from '~/services/api';
 import MenuBar from '~/components/MenuBar';
 
 export default function HelpOrders() {
+  const [loading, setLoading] = useState(true);
   const [helpOrders, setHelpOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalHelpOrder, setModalHelpOrder] = useState({});
@@ -22,12 +24,22 @@ export default function HelpOrders() {
     loadData();
   }, []);
 
-  // Handle Submit
-  function handleSubmit(data) {
-    console.log(data);
-    // api.post(`help-orders/${data.id}/answer`, data);
+  useEffect(() => {}, [HelpOrders]); // eslint-disable-line
 
-    setShowModal(false);
+  // Handle Submit
+  async function handleSubmit(data) {
+    try {
+      const response = await api.post(`help-orders/${data.id}/answer`, data);
+      toast.success('Resposta enviada');
+      const { id } = response.data;
+      setHelpOrders(
+        helpOrders.filter(helpOrder => helpOrder.id !== Number(id))
+      );
+      setShowModal(false);
+    } catch (err) {
+      const { error } = err.response.data;
+      toast.error(`Erro: ${error}`);
+    }
   }
 
   // Handle abrir modal ao clicar em editar
