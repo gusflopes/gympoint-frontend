@@ -8,7 +8,7 @@ import api from '~/services/api';
 import MenuBar from '~/components/MenuBar';
 
 export default function HelpOrders() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [helpOrders, setHelpOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalHelpOrder, setModalHelpOrder] = useState({});

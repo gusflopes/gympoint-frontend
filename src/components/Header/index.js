@@ -21,7 +21,7 @@ export default function Header() {
         <nav>
           <NavItem to="/students">ALUNOS</NavItem>
           <NavItem to="/plans">PLANOS</NavItem>
-          <NavItem to="/enrollments">MATRÍCULAS</NavItem>
+          <NavItem to="/registrations">MATRÍCULAS</NavItem>
           <NavItem to="/help-orders">PEDIDOS DE AUXÍLIO</NavItem>
         </nav>
       </Content>

@@ -10,7 +10,9 @@ import StudentDetails from '~/pages/Students/StudentDetails';
 import Plans from '~/pages/Plans';
 import PlanDetails from '~/pages/Plans/PlanDetails';
 
-import Enrollments from '~/pages/Enrollments';
+import Registrations from '~/pages/Registrations';
+import RegistrationDetails from '~/pages/Registrations/RegistrationDetails';
+
 import HelpOrders from '~/pages/HelpOrders';
 
 export default function Routes() {
@@ -39,10 +41,21 @@ export default function Routes() {
         component={PlanDetails}
         isPrivate
       />
-
       <Route path="/plans" component={Plans} isPrivate />
 
-      <Route path="/enrollments" component={Enrollments} isPrivate />
+      <Route
+        path="/registrations/details"
+        exact
+        component={RegistrationDetails}
+        isPrivate
+      />
+      <Route
+        path="/registrations/details/:id"
+        exact
+        component={RegistrationDetails}
+        isPrivate
+      />
+      <Route path="/registrations" component={Registrations} isPrivate />
 
       <Route path="/help-orders" component={HelpOrders} isPrivate />
 
