@@ -12,6 +12,7 @@ import PlanDetails from '~/pages/Plans/PlanDetails';
 
 import Registrations from '~/pages/Registrations';
 import RegistrationDetails from '~/pages/Registrations/RegistrationDetails';
+import RegistrationNew from '~/pages/Registrations/RegistrationNew';
 
 import HelpOrders from '~/pages/HelpOrders';
 
@@ -46,7 +47,7 @@ export default function Routes() {
       <Route
         path="/registrations/details"
         exact
-        component={RegistrationDetails}
+        component={RegistrationNew}
         isPrivate
       />
       <Route

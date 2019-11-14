@@ -19,6 +19,7 @@ export default function Registrations() {
   useEffect(() => {
     async function loadData() {
       const response = await api.get('enrollments');
+      console.log(response.data);
 
       const data = response.data.map(registration => ({
         ...registration,
@@ -38,7 +39,7 @@ export default function Registrations() {
 
     dispatch(registrationEditRequest(registration));
 
-    history.push(`/registrations/details/:${registrationId}`);
+    history.push(`/registrations/details/${registrationId}`);
   }
 
   async function handleDelete(registrationId) {
@@ -71,8 +72,8 @@ export default function Registrations() {
           <tbody>
             {registrations.map(registration => (
               <tr key={registration.id}>
-                <td>{registration.student_id}</td>
-                <td>{registration.plan_id}</td>
+                <td>{registration.student.name}</td>
+                <td>{registration.plan.title}</td>
                 <td>{registration.startDateFormatted}</td>
                 <td>{registration.endDateFormatted}</td>
                 <td>

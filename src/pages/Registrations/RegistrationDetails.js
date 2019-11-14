@@ -1,126 +1,142 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { format, parseISO, differenceInMonths, addMonths } from 'date-fns';
+import { Form } from '@rocketseat/unform';
 
-import { Input } from '@rocketseat/unform';
-import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+
+import DetailsMenu from '~/components/DetailsMenu';
+import PlanSelect from '~/components/PlanSelect';
+import DatePicker from '~/components/DatePicker';
+import CurrencyInputOld from '~/components/CurrencyInputOld';
+
+import { Container, GridContainer } from './styles';
+
+import StudentSelect from '~/components/StudentSelect';
+
 import api from '~/services/api';
 import history from '~/services/history';
 
-import { Container } from '~/styles/global';
-import { Unform, GridContainer, Content } from './styles';
-import PlanSelect from '~/components/PlanSelect';
-import DetailsMenu from '~/components/DetailsMenu';
-import CurrencyInput from '~/components/CurrencyInput';
-
-export default function RegistrationDetails() {
+export default function EditEnrollment() {
   const { id } = useParams();
-  const initialData = useSelector(state => state.registration.registration);
+  const { registration } = useSelector(state => state.registration);
+  const [newStudent, setNewStudent] = useState({});
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [newPlan, setNewPlan] = useState();
+  const [initialData, setInitialData] = useState();
+  const [totalPrice, setTotalPrice] = useState();
 
-  const [options, setOptions] = useState([]);
-  const [registration, setRegistration] = useState({
-    id: null,
-    studentId: null,
-    planId: null,
-    startDate: null,
-    endDate: null,
-    totalPrice: null,
-  });
+  useMemo(() => {
+    if (registration) {
+      const duration = differenceInMonths(
+        new Date(registration.end_date),
+        new Date(registration.start_date)
+      );
+
+      setInitialData({
+        student: {
+          label: registration.student.name,
+          value: registration.student.id,
+        },
+        plan: {
+          label: registration.plan.title,
+          value: registration.plan.id,
+        },
+      });
+      setStartDate(new Date(registration.start_date));
+      setNewPlan({
+        ...registration.plan,
+        price: registration.price,
+        duration,
+      });
+      setNewStudent({
+        label: registration.student.name,
+        value: registration.student.id,
+      });
+    }
+  }, [registration]);
+
+  async function handleSubmit({ student, plan }) {
+    console.log(
+      `Student: ${student.value}, Plan: ${plan.value}, Start: ${startDate}`
+    );
+    try {
+      await api.put(`enrollments/${registration.id}`, {
+        student_id: student.value,
+        plan_id: plan.value,
+        start_date: startDate,
+      });
+
+      toast.success('Alteração efetuada com sucesso');
+      history.push('/registrations');
+    } catch (err) {
+      const { error } = err.response.data;
+      if (error) {
+        toast.error(
+          'A data inicial da matrícula não pode ser menor que a data atual'
+        );
+        return;
+      }
+      toast.error('Não foi possível alterar a matrícula');
+    }
+  }
 
   useEffect(() => {
-    async function loadInitialData() {
-      if (id) {
-        if (!initialData) {
-          history.push('/registrations');
-          return;
-        }
-        console.log(`Initial Data: ${JSON.stringify(initialData)}`);
-        // Registration do Redux
-        setRegistration(r => ({
-          ...r,
-          id: initialData.id,
-          studentId: initialData.student_id,
-          planId: initialData.id,
-          startDate: initialData.start_date,
-          endDate: initialData.end_date,
-          totalPrice: initialData.price,
-          option: {
-            value: initialData.id,
-          },
-        }));
-      }
-      // Load Plans
-      const { data } = await api.get('plans');
-
-      setOptions(
-        data.map(p => ({
-          ...p,
-          value: p.id,
-          label: p.title,
-        }))
-      );
+    if (newPlan) {
+      const parsedStartDate = parseISO(format(startDate, 'yyyy-MM-dd'));
+      const incrementedStartDate = addMonths(parsedStartDate, newPlan.duration);
+      setEndDate(new Date(incrementedStartDate));
+      setTotalPrice(newPlan.duration * newPlan.price);
     }
-    loadInitialData();
-  }, [id, initialData]); //eslint-disable-line
-
-  /*
-  const schema = Yup.object().shape({
-    student: Yup.string().required('Campo obrigatório'),
-  });
-  */
-
-  function handleSubmit(data) {
-    console.log(data);
-    // setRegistration(r => ({ ...r, totalPrice: 200 }));
-  }
+  }, [startDate, newPlan]);
 
   return (
     <Container>
-      <DetailsMenu name="Matrícula" form="Registration" edit={!!id} />
+      <DetailsMenu name="Matrícula" form="formEditEnrollment" edit={!!id} />
 
-      <Content>
-        <Unform
-          id="Registration"
-          onSubmit={handleSubmit}
-          initialData={registration}
-        >
-          <div className="StudentField">
-            <strong>ALUNO</strong>
-            <Input name="studentId" />
+      <Form
+        id="formEditEnrollment"
+        initialData={initialData}
+        onSubmit={handleSubmit}
+      >
+        <StudentSelect
+          name="student"
+          label="ALUNO"
+          defaultValue={newStudent}
+          setChange={setNewStudent}
+        />
+
+        <GridContainer>
+          <div id="plansSelect">
+            <PlanSelect name="plan" label="PLANO" setChange={setNewPlan} />
           </div>
 
-          <GridContainer>
-            <div id="plansSelect">
-              <PlanSelect
-                className="planSelect"
-                name="planId"
-                label="PLANO"
-                options={options}
-              />
-            </div>
+          <div>
+            <label htmlFor="start_date">DATA DE INICIO</label>
+            <DatePicker
+              name="start_date"
+              setChange={setStartDate}
+              getChange={startDate}
+            />
+          </div>
 
-            <div>
-              <label>DATA DE INÍCIO</label>
-              <Input name="startDate" />
-            </div>
+          <div>
+            <label htmlFor="end_date">DATA DE TÉRMINO</label>
+            <DatePicker name="end_date" getChange={endDate} disabled />
+          </div>
 
-            <div>
-              <label>DATA DE TÉRMINO</label>
-              <Input name="endDate" />
-            </div>
-
-            <div>
-              <label>VALOR FINAL</label>
-              <CurrencyInput
-                name="totalPrice"
-                label="VALOR FINAL"
-                getChange={registration.totalPrice}
-                disabled
-              />
-            </div>
-          </GridContainer>
-        </Unform>
-      </Content>
+          <div>
+            <CurrencyInputOld
+              name="total"
+              label="VALOR FINAL"
+              getChange={totalPrice}
+              disabled
+            />
+          </div>
+        </GridContainer>
+      </Form>
     </Container>
   );
 }

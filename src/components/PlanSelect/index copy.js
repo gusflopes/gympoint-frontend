@@ -1,15 +1,26 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 
 import { useField } from '@rocketseat/unform';
 
-export default function ReactSelect({ name, label, options }) {
+export default function ReactSelect({
+  name,
+  label,
+  options,
+  multiple,
+  ...rest
+}) {
   const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
 
   function parseSelectValue(selectRef) {
-    return selectRef.state.value;
+    const selectValue = selectRef.state.value;
+    if (!multiple) {
+      return selectValue ? selectValue.id : '';
+    }
+
+    return selectValue ? selectValue.map(option => option.id) : [];
   }
 
   useEffect(() => {
@@ -24,49 +35,41 @@ export default function ReactSelect({ name, label, options }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
-  function loadOptions(inputValue) {
-    return api
-      .get(`students?q=${inputValue}`)
-      .then(r => r.data)
-      .then(r =>
-        r.map(student => ({
-          label: student.name,
-          value: student.id,
-        }))
-      );
-  }
+  function getDefaultValue() {
+    if (!defaultValue) return null;
 
-  function handleOnChange(student) {
-    if (setChange) {
-      setChange(student);
+    if (!multiple) {
+      return options.find(option => option.id === defaultValue);
     }
+
+    return options.filter(option => defaultValue.includes(option.id));
   }
 
   return (
     <>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
-      <AsyncSelect
+      <Select
         name={fieldName}
         aria-label={fieldName}
-        defaultValue
-        value={defaultValue}
+        options={options}
+        isMulti={multiple}
+        defaultValue={getDefaultValue()}
+        label={label}
+        placeholder="Selecione"
         ref={ref}
-        placeholder="Buscar aluno"
-        loadOptions={loadOptions}
-        defaultOptions
-        onChange={student => handleOnChange(student)}
       />
 
       {error && <span>{error}</span>}
     </>
   );
 }
-AsyncSelect.defaultProps = {
+
+ReactSelect.defaultProps = {
   label: null,
 };
 
-AsyncSelect.propTypes = {
+ReactSelect.propTypes = {
   name: PropTypes.objectOf(PropTypes.object).isRequired,
   options: PropTypes.objectOf(PropTypes.object).isRequired,
   label: PropTypes.string,
