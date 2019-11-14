@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -7,8 +7,9 @@ import * as Yup from 'yup';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import { Container, Content } from '~/styles/global';
-import { Unform } from './styles';
+import { Container } from '~/styles/global';
+import { Unform, GridContainer, Content } from './styles';
+import PlanSelect from '~/components/PlanSelect';
 import DetailsMenu from '~/components/DetailsMenu';
 import CurrencyInput from '~/components/CurrencyInput';
 
@@ -16,6 +17,7 @@ export default function RegistrationDetails() {
   const { id } = useParams();
   const initialData = useSelector(state => state.registration.registration);
 
+  const [options, setOptions] = useState([]);
   const [registration, setRegistration] = useState({
     id: null,
     studentId: null,
@@ -25,15 +27,15 @@ export default function RegistrationDetails() {
     totalPrice: null,
   });
 
-  useMemo(() => {
-    async function loadPlan() {
+  useEffect(() => {
+    async function loadInitialData() {
       if (id) {
         if (!initialData) {
           history.push('/registrations');
           return;
         }
-        console.log(`activePlan: ${JSON.stringify(initialData)}`);
-
+        console.log(`Initial Data: ${JSON.stringify(initialData)}`);
+        // Registration do Redux
         setRegistration(r => ({
           ...r,
           id: initialData.id,
@@ -42,26 +44,35 @@ export default function RegistrationDetails() {
           startDate: initialData.start_date,
           endDate: initialData.end_date,
           totalPrice: initialData.price,
+          option: {
+            value: initialData.id,
+          },
         }));
       }
-    }
-    loadPlan();
-  }, [id, initialData]);
+      // Load Plans
+      const { data } = await api.get('plans');
 
+      setOptions(
+        data.map(p => ({
+          ...p,
+          value: p.id,
+          label: p.title,
+        }))
+      );
+    }
+    loadInitialData();
+  }, [id, initialData]); //eslint-disable-line
+
+  /*
   const schema = Yup.object().shape({
     student: Yup.string().required('Campo obrigatório'),
   });
+  */
 
-  async function handleSubmit() {
-    console.log('Handle Submit');
-
-    setRegistration(r => ({ ...r, totalPrice: 200 }));
+  function handleSubmit(data) {
+    console.log(data);
+    // setRegistration(r => ({ ...r, totalPrice: 200 }));
   }
-
-  useEffect(() => {
-    const { planId, startDate } = registration;
-    console.log('Pescando alterações no state');
-  }, [registration]);
 
   return (
     <Container>
@@ -69,40 +80,45 @@ export default function RegistrationDetails() {
 
       <Content>
         <Unform
-          schema={schema}
           id="Registration"
           onSubmit={handleSubmit}
           initialData={registration}
         >
-          <div className="fullSize">
+          <div className="StudentField">
             <strong>ALUNO</strong>
             <Input name="studentId" />
           </div>
 
-          <div>
-            <strong>PLANO</strong>
-            <Input name="planId" />
-          </div>
+          <GridContainer>
+            <div id="plansSelect">
+              <PlanSelect
+                className="planSelect"
+                name="planId"
+                label="PLANO"
+                options={options}
+              />
+            </div>
 
-          <div>
-            <strong>DATA DE INÍCIO</strong>
-            <Input name="startDate" />
-          </div>
+            <div>
+              <label>DATA DE INÍCIO</label>
+              <Input name="startDate" />
+            </div>
 
-          <div>
-            <strong>DATA DE TÉRMINO</strong>
-            <Input name="endDate" />
-          </div>
+            <div>
+              <label>DATA DE TÉRMINO</label>
+              <Input name="endDate" />
+            </div>
 
-          <div>
-            <strong>VALOR FINAL</strong>
-            <CurrencyInput
-              name="totalPrice"
-              label="VALOR FINAL"
-              getChange={registration.totalPrice}
-              disabled
-            />
-          </div>
+            <div>
+              <label>VALOR FINAL</label>
+              <CurrencyInput
+                name="totalPrice"
+                label="VALOR FINAL"
+                getChange={registration.totalPrice}
+                disabled
+              />
+            </div>
+          </GridContainer>
         </Unform>
       </Content>
     </Container>

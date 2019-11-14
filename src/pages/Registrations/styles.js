@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 // import { darken } from 'polished';
 import { Form } from '@rocketseat/unform';
+import ReactSelect from '~/components/PlanSelect';
 
 import colors from '~/styles/colors';
 
@@ -19,34 +20,57 @@ export const Content = styled.div`
   flex: 1;
   flex-direction: row;
   width: 100%;
-  background: #fff;
   border-radius: 4px;
+  max-width: 900px;
+
+  div.StudentField {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+
+    label {
+      font-size: 14px;
+      color: #444;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    input {
+      background: #ffffff;
+      height: 45px;
+      border-radius: 4px;
+      border: solid 1px #dddddd;
+
+      font-size: 16px;
+      color: #666666;
+      padding-left: 15px;
+
+      &:focus {
+        border-color: #7159c1 !important;
+      }
+
+      &:disabled {
+        background-color: #dcdcdc;
+      }
+    }
+  }
 `;
 
 export const Unform = styled(Form)`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  width: 100%;
-  margin: 30px 30px 10px 14px;
-
-  div {
-    display: flex;
-    flex-direction: column;
-    margin-left: 16px;
-    margin-bottom: 20px;
-  }
-
-  strong {
-    font-size: 14px;
-    color: #444444;
-    margin-bottom: 5px;
-  }
-
-  span {
-    color: red;
-  }
-
-  input {
+  form {
+    background: #fff;
+    margin-top: 41px;
+    border-radius: 4px;
+    padding: 9px 30px 10px;
+    /* display: flex;
+    flex-direction: column; */
+    label {
+      font-size: 14px;
+      color: #444;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    input {
     background: #ffffff;
     height: 45px;
     border-radius: 4px;
@@ -64,9 +88,51 @@ export const Unform = styled(Form)`
       background-color: #dcdcdc;
     }
   }
+    }
+  }
+`;
 
-  .fullSize {
-    grid-column: 1/5;
+export const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 15px;
+  margin-top: 15px;
+  div {
+    label {
+      font-size: 14px;
+      color: #444;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    input {
+      background: #ffffff;
+      height: 45px;
+      border-radius: 4px;
+      border: solid 1px #dddddd;
+
+      font-size: 16px;
+      color: #666666;
+      padding-left: 15px;
+      width: 100%;
+
+      &:focus {
+        border-color: #7159c1 !important;
+      }
+
+      &:disabled {
+        background-color: #ebebe4;
+      }
+    }
+  }
+
+  div.react-datepicker-wrapper {
+    width: 100%;
+  }
+  > div#plansSelect {
+    input {
+      max-height: 32px;
+    }
   }
 `;
 
