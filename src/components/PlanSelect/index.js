@@ -15,6 +15,18 @@ export default function ReactSelect({ name, label, setChange }) {
     return selectedValue;
   }
 
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: ref.current,
+      path: 'state.value',
+      parseValue: parseSelectValue,
+      clearValue: selectRef => {
+        selectRef.select.clearValue();
+      },
+    });
+  }, [ref.current, fieldName]); // eslint-disable-line
+
   useMemo(() => {
     async function loadPlans() {
       const response = await api.get('plans');
@@ -29,18 +41,6 @@ export default function ReactSelect({ name, label, setChange }) {
 
     loadPlans();
   }, []);
-
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: ref.current,
-      path: 'state.value',
-      parseValue: parseSelectValue,
-      clearValue: selectRef => {
-        selectRef.select.clearValue();
-      },
-    });
-  }, [ref.current, fieldName]); // eslint-disable-line
 
   function handleOnChange(plan) {
     setChange(plan);

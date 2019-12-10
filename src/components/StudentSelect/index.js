@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import AsyncSelect from 'react-select/async';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import Select from 'react-select';
 import PropTypes from 'prop-types';
 
 import { useField } from '@rocketseat/unform';
@@ -9,9 +9,12 @@ import api from '~/services/api';
 export default function StudentSelect({ name, label, setChange }) {
   const ref = useRef(null);
   const { fieldName, registerField, defaultValue, error } = useField(name);
+  const [options, setOptions] = useState();
+  const [timer, setTimer] = useState(null);
 
   function parseSelectValue(selectRef) {
-    return selectRef.select.state.value;
+    const selectedValue = selectRef.state.value;
+    return selectedValue;
   }
 
   useEffect(() => {
@@ -26,7 +29,45 @@ export default function StudentSelect({ name, label, setChange }) {
     });
   }, [ref.current, fieldName]); // eslint-disable-line
 
-  function loadOptions(inputValue) {
+  useMemo(() => {
+    async function loadStudents() {
+      const response = await api.get('students');
+      const students = response.data.map(student => ({
+        label: student.name,
+        value: student.id,
+      }));
+
+      setOptions(students);
+    }
+
+    loadStudents();
+  }, []);
+
+  /*
+  async function loadOptions(inputValue) {
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(null);
+    }
+
+    setTimer(
+      setTimeout(async () => {
+        console.log('Timer finalizado');
+
+        const { data } = await api.get(`students?name=${inputValue}`);
+
+        const students = data.map(student => ({
+          label: student.name,
+          value: student.id,
+        }));
+        setOptions(students);
+      }, 500)
+    );
+  }
+  */
+
+  /*
+  function loadOptionsOLD(inputValue) {
     return api
       .get(`students?q=${inputValue}`)
       .then(r => r.data)
@@ -37,27 +78,29 @@ export default function StudentSelect({ name, label, setChange }) {
         }))
       );
   }
+  */
 
   function handleOnChange(student) {
-    if (setChange) {
-      setChange(student);
-    }
+    // if (setChange) {
+    setChange(student);
+    // }
   }
 
   return (
     <>
       {label && <label htmlFor={fieldName}>{label}</label>}
 
-      <AsyncSelect
+      <Select
         name={fieldName}
         aria-label={fieldName}
-        defaultValue
-        value={defaultValue}
-        ref={ref}
+        defaultValue={defaultValue}
+        // loadOptions={loadOptions}
+        label={label}
+        options={options}
+        // defaultOptions
         placeholder="Buscar aluno"
-        loadOptions={loadOptions}
-        defaultOptions
         onChange={student => handleOnChange(student)}
+        ref={ref}
       />
 
       {error && <span>{error}</span>}

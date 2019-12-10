@@ -21,6 +21,7 @@ export default function RegisterEnrollment() {
   const { id } = useParams();
   const [startDate, setStartDate] = useState();
   const [newPlan, setNewPlan] = useState();
+  const [newStudent, setNewStudent] = useState();
   const [total, setTotal] = useState('');
 
   const end_date = useMemo(() => {
@@ -50,7 +51,7 @@ export default function RegisterEnrollment() {
       <DetailsMenu name="Matrícula" form="formNewEnrollment" edit={!!id} />
 
       <Form id="formNewEnrollment" onSubmit={handleSubmit}>
-        <StudentSelect name="student" label="ALUNO" />
+        <StudentSelect name="student" label="ALUNO" setChange={setNewStudent} />
 
         <GridContainer>
           <div id="plansSelect">
