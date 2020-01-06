@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import DetailsMenu from '~/components/DetailsMenu';
 import PlanSelect from '~/components/PlanSelect';
 import DatePicker from '~/components/DatePicker';
-import CurrencyInputOld from '~/components/CurrencyInputOld';
+import CurrencyInput from '~/components/CurrencyInput';
 
 import { Container, GridContainer } from './styles';
 
@@ -128,7 +128,7 @@ export default function EditEnrollment() {
           </div>
 
           <div>
-            <CurrencyInputOld
+            <CurrencyInput
               name="total"
               label="VALOR FINAL"
               getChange={totalPrice}
